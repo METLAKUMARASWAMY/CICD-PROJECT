@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prescripto-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prescripto-backend
+  template:
+    metadata:
+      labels:
+        app: prescripto-backend
+    spec:
+      containers:
+        - name: backend
+          image: prescripto-backend:latest
+          imagePullPolicy: Never   # use local Docker image
+          ports:
+            - containerPort: 4000
+          envFrom:
+            - secretRef:
+                name: prescripto-backend-env   # from kubectl create secret ...
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prescripto-backend-service
+spec:
+  selector:
+    app: prescripto-backend
+  ports:
+    - port: 4000
+      targetPort: 4000
+  type: ClusterIP
