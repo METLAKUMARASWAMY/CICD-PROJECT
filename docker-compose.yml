@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: prescripto-backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "4000:4000"   # host:container (matches server.js & Dockerfile)
+
+  frontend:
+    build: ./frontend
+    container_name: prescripto-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"     # nginx serves on 80 inside container
